@@ -1,7 +1,6 @@
-# jedzacy-filozofowie
+## Problem jedzących filozofów
 "Jedzą, piją, lulki palą, tańce, hulanka, swawola" - A. Mickiewicz lub Młody Gdynianin
 
-## Problem jedzących filozofów
 W oryginalnym problemie jedzących filozofów pięciu filozofów siedzi przy stole. Każdy filozof może robić jedną z trzech czynności: myśleć, jeść lub być głodnym. Na stole znajduje się pięc widelców (pałeczek). Każdy filozof ma swoją miskę z jedzeniem, jednakże aby przystąpić do konsumpcji musi mieć oba widelce, które się przy nim znajdują. Przy założeniu, że w jednym momencie filozof bierze tylko jeden widelec do ręki, może nastąpić tak zwany deadlock. Jeżeli w tym samym czasie każdy filozof pochwyci widelec znajdujący się po jego lewej stronie, żaden z nich nie będzie mógł uzyskać drugiego widelca. W takiej sytuacji filozofowie będą oczekiwali w nieskończoność. 
 Sytuacja ta znajduje odzwierciedlenie w temacie wielowątkowości.
 W informatyce istnieje pojęcie warunków koniecznych do wystąpienia blokady:
