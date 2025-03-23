@@ -20,7 +20,7 @@ Kluczową ideą rozwiązania, która zapobiega zagłodzeniu wątków (filozofów
 Program został wykonany w środowisku Visual Studio 2022. W celu uruchomienia projektu należy pobrać repozytorium.
 W folderze jedzacy-filozofowie/DiningPhilosophers/DiningPhilosophers znajduje się plik DiningPhilosophers.cpp
 Należy przejść do tego folderu i użyć komendy g++ w następującej postaci:
-g++ -std=c++20 DiningPhilosophers.cpp -o DiningPhilosophers
+g++ -std=c++20 DiningPhilosophers.cpp -o DiningPhilosophers.
 Aby następnie uruchomić program:
 ./DiningPhilosophers
 
