@@ -59,7 +59,7 @@ void takeForks(int philosopherIndex)
     criticalRegionMtx.lock();
     philosophersState.at(philosopherIndex) = State::HUNGRY;
     outputMtx.lock();
-    std::cout << "\t\t" << "Philosopher" << philosopherIndex << " is hungry\n";
+    std::cout << "\t\t" << "Philosopher " << philosopherIndex << " is hungry\n";
     outputMtx.unlock();
     test(philosopherIndex);
     criticalRegionMtx.unlock();
@@ -79,6 +79,9 @@ void putForks(int philosopherIndex)
 {
     criticalRegionMtx.lock();
     philosophersState.at(philosopherIndex) = State::THINKING;
+    outputMtx.lock();
+    std::cout << "\t\t\t\t" << "Philosopher " << philosopherIndex << " has put down forks" << std::endl;
+    outputMtx.unlock();
     test(leftNeighborIndex(philosopherIndex, philosophersState.size()));
     test(rightNeighborIndex(philosopherIndex, philosophersState.size()));
     criticalRegionMtx.unlock();
