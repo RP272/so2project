@@ -6,6 +6,9 @@
 #include <vector>
 #include <mutex>
 #include <random>
+#include <memory>
+#include <thread>
+
 
 enum class State
 {
@@ -42,6 +45,9 @@ void test(int philosopherIndex)
     {
         philosophersState.at(philosopherIndex) = State::EATING;
         bothForksAvailable.at(philosopherIndex)->release();
+        outputMtx.lock();
+        std::cout << "Thread " << std::this_thread::get_id() << ": I JUST INCREMENTED SEMAPHORE NUMBER " << philosopherIndex << "\n";
+        outputMtx.unlock();
     }
 }
 
@@ -64,6 +70,9 @@ void takeForks(int philosopherIndex)
     test(philosopherIndex);
     criticalRegionMtx.unlock();
     bothForksAvailable.at(philosopherIndex)->acquire();
+    outputMtx.lock();
+    std::cout << "\t\tThread " << std::this_thread::get_id() << ": I JUST GOT RELEASED " << philosopherIndex << "\n";
+    outputMtx.unlock();
 }
 
 void eat(int philosopherIndex)
