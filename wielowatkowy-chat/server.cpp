@@ -11,11 +11,14 @@
 
 #define MAX_CLNT 256
 #define SERVER_PORT 9997
+#define BUF_SIZE 1024
 
 int clnt_cnt = 0;
 std::mutex mtx;
+std::unordered_map<std::string, int>clnt_socks;
 
 void handle_clnt(int clnt_sock);
+void send_msg(const std::string &msg);
 
 int main(){
     int serv_sock, clnt_sock;
@@ -71,4 +74,85 @@ int main(){
     }
     close(serv_sock);
     return 0;
+}
+
+void handle_clnt(int clnt_sock) {
+    char client_message[BUF_SIZE];
+    bool user_registered = false;
+    const char* tell_name = "#new client:";
+
+    while (true) {
+        // recv - receive a message from a socket. If no messages are available at the socket, the receive calls wait for a message to arrive, unless the socket  is  nonblocking in  which  case the value -1 is returned and errno is set to EAGAIN or EWOULDBLOCK.
+        ssize_t recv_len = recv(clnt_sock, client_message, sizeof(client_message), 0);
+        
+        // Check if client left the chat. If so, break the loop.
+        if (recv_len <= 0) break;
+
+        if (std::strlen(client_message) > std::strlen(tell_name)) {
+            // Check if the client_message starts with '#new client:'. If yes, it means that the clients sends in it's name.
+            if (std::strncmp(client_message, tell_name, std::strlen(tell_name)) == 0) {
+                char name[20];
+                std::strcpy(name, client_message + std::strlen(tell_name));
+
+                mtx.lock();
+                // Check if a socket with received name already exists in the unordered map. 
+                if (clnt_socks.find(name) == clnt_socks.end()) {
+                    printf("the name of socket %d: %s\n", clnt_sock, name);
+                    clnt_socks[name] = clnt_sock;
+                    user_registered = true;
+                    printf("number of users: %d\n", clnt_cnt);
+                } else {
+                    std::string error_msg = std::string(name) + " exists already. Please quit and enter with another name!";
+                    // send - send a message on a socket
+                    // 1st - socket descriptor
+                    // 2nd - message buffer
+                    // 3rd - buffer length
+                    // 4th - flags
+                    send(clnt_sock, error_msg.c_str(), error_msg.length() + 1, 0);
+                    clnt_cnt--;
+                    mtx.unlock();
+                    break;
+                }
+                mtx.unlock();
+            }
+        }
+
+        if (user_registered == true) {
+            // Broadcast the message from client to the whole chat.
+            send_msg(std::string(client_message));
+        }
+    }
+
+    if (user_registered == true) {
+        // The client has left the chat. Remove the client from unordered map of sockets 
+        std::string name, leave_msg;
+        mtx.lock();
+        auto it = clnt_socks.begin();
+        while (it != clnt_socks.end()) {
+            if (it->second == clnt_sock) {
+                name = it->first;
+                it = clnt_socks.erase(it);
+                break;
+            } else {
+                ++it;
+            }
+        }
+        clnt_cnt--;
+        mtx.unlock();
+        leave_msg = "client " + name + " leaves the chat room";
+        send_msg(leave_msg);
+        printf("client %s leaves the chat room\n", name.c_str());
+    }
+
+    close(clnt_sock);
+}
+
+void send_msg(const std::string &msg) {
+    mtx.lock();
+    for (const auto& [_, sock] : clnt_socks) {
+        if (send(sock, msg.c_str(), msg.length() + 1, 0) == -1) {
+            printf("Failed to send to socket %d\n", sock);
+        }
+    }
+    mtx.unlock();
 }
