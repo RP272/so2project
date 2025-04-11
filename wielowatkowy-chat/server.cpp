@@ -1,9 +1,21 @@
 #include <iostream>
 #include <cstring>
+#include <thread>
+#include <mutex>
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/socket.h>
 #include <arpa/inet.h>
+#include <unordered_map>
+#include <stdarg.h>
 
 #define MAX_CLNT 256
 #define SERVER_PORT 9997
+
+int clnt_cnt = 0;
+std::mutex mtx;
+
+void handle_clnt(int clnt_sock);
 
 int main(){
     int serv_sock, clnt_sock;
@@ -36,4 +48,27 @@ int main(){
         std::cerr << "listen() error!" << std::endl;
         exit(0);
     }
+
+    while(true){  
+        clnt_addr_size = sizeof(clnt_addr);
+        // accept a connection on a socket. Extracts the first connection request on the pending connections from for the listening socket (serv_sock). Creates a new connected socket and returns a new file descriptor referring to that socket (clnt_sock).
+        clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr, &clnt_addr_size);
+        if (clnt_sock == -1){
+            std::cerr << "accept() error!" << std::endl;
+            exit(0);
+        }
+
+        mtx.lock();
+        clnt_cnt++;
+        mtx.unlock();
+
+        std::thread th(handle_clnt, clnt_sock);
+        // Separates the thread of execution from the thread object, allowing execution to continue independently. Any allocated resources will be freed once the thread exits.
+        th.detach();
+
+        // The inet_ntoa() function converts the Internet host address in, given in network byte order, to a string in IPv4 dotted-decimal notation. The string is returned in a statically allocated buffer, which subsequent calls will overwrite.
+        printf("Connected client IP: %s \n", inet_ntoa(clnt_addr.sin_addr));
+    }
+    close(serv_sock);
+    return 0;
 }
