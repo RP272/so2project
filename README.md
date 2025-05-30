@@ -27,5 +27,5 @@ Aby następnie uruchomić program:
 https://en.wikipedia.org/wiki/Dining_philosophers_problem
 http://smurf.mimuw.edu.pl/node/955
 ## Wielowątkowy serwer czatu
-W przypadku wielowątkowego serwera czatu kod został podzielony na dwa pliki: client.cpp oraz server.cpp. Kod serwera czatu oparty jest o mechanizm socket-ów, które pozwalają na komunikację między procesami za pomocą protokołu TCP/IP. Na serwerze tworzony jest socket, do którego przypisywany jest adres oraz port. Następnie serwer nasłuchuje na tym sockecie w nieskończonej pętli while.
+W przypadku wielowątkowego serwera czatu kod został podzielony na dwa pliki: client.cpp oraz server.cpp. Kod serwera czatu oparty jest o mechanizm socket-ów, które pozwalają na komunikację między procesami za pomocą protokołu TCP/IP. Na serwerze tworzony jest socket, do którego przypisywany jest adres oraz port. Następnie serwer nasłuchuje na tym sockecie w nieskończonej pętli while na połączenia przychodzące ze strony klienta. Dla każdego nowego klienta tworzony jest osobny wątek.
 cdn ...
