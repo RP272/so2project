@@ -27,5 +27,8 @@ Aby następnie uruchomić program:
 https://en.wikipedia.org/wiki/Dining_philosophers_problem
 http://smurf.mimuw.edu.pl/node/955
 ## Wielowątkowy serwer czatu
-W przypadku wielowątkowego serwera czatu kod został podzielony na dwa pliki: client.cpp oraz server.cpp. Kod serwera czatu oparty jest o mechanizm socket-ów, które pozwalają na komunikację między procesami za pomocą protokołu TCP/IP. Na serwerze tworzony jest socket, do którego przypisywany jest adres oraz port. Następnie serwer nasłuchuje na tym sockecie w nieskończonej pętli while na połączenia przychodzące ze strony klienta. Dla każdego nowego klienta tworzony jest osobny wątek, który uruchamia funkcję handle_clnt.
-cdn ...
+Programy umożliwiają uruchomienie serwera czatu działającego na określonym porcie. Program klienta umożliwia połączenie się z serwerem oraz wysyłanie wiadomości do członków czatu. Oprócz tego klient odbiera wiadomości wysyłane przez pozostałych użytkowników. Kod został podzielony na dwa pliki: client.cpp oraz server.cpp. Kod serwera czatu oparty jest o mechanizm socket-ów, które pozwalają na komunikację między procesami za pomocą protokołu TCP/IP. Na serwerze tworzony jest socket, do którego przypisywany jest adres oraz port. Następnie serwer nasłuchuje na tym sockecie w nieskończonej pętli while na połączenia przychodzące ze strony klienta. Dla każdego nowego klienta tworzony jest osobny wątek, który uruchamia funkcję handle_clnt. Funkcja handle_clnt wysyła wiadomości od klientów do pozostałych klientów oraz obsługuje opuszczenie czatu przez klienta. Funkcja wykorzystuje mechanizm mutexów w celu modyfikacji mapy przechowującej sockety klientów oraz licznika klientów. 
+
+Kod programu klienta realizuje kilka funkcjonalności. Po pierwsze tworzy socket dla klienta, a następnie nawiązuje połączenie z socketem serwera. W kodzie klienta zdefiniowano dwie funkcje: send_msg do wysylania wiadomości do serwera oraz recv_msg, która odbiera komunikaty użytkowników wysyłane z serwera.  
+
+Dzięki użyciu wielowątkowości oraz mechanizmu mutex serwer może obsługiwać wielu użytkowników jednocześnie. 
