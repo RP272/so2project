@@ -38,8 +38,8 @@ Historia wiadomości czatu nie jest przechowywana na serwerze. Wiadomości przyc
 
 ### Uruchomienie programu
 W folderze wielowatkowy-chat znajdują się pliki client.cpp oraz server.cpp. W celu kompilacji plików do programów wykonywalnych należy użyć komendy: 
-g++ -std=c++20 server.cpp -o server
-g++ -std=c++20 client.cpp -o client
+<br>g++ -std=c++20 server.cpp -o server
+<br>g++ -std=c++20 client.cpp -o client
 
 
 
